@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+
+# Frontend
+frontend/node_modules/
+frontend/.vite/
+
+# Bun
+bun.lockb
+
+# Test results
+test-results/
+
+# Logs
+log.txt
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,27 @@
+{
+  "name": "@deepgram/bun-transcription",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prerecorded audio transcription using Deepgram's speech-to-text API with Bun",
+  "main": "server.ts",
+  "scripts": {
+    "start": "bun run server.ts",
+    "dev": "bun --watch run server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepgram-starters/bun-transcription.git"
+  },
+  "keywords": ["speech-to-text", "deepgram", "transcription", "bun", "typescript"],
+  "author": "Deepgram DX Team <devrel@deepgram.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@deepgram/sdk": "4.11.3",
+    "jsonwebtoken": "9.0.2",
+    "@iarna/toml": "2.2.5"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "9.0.9",
+    "@types/bun": "1.2.5"
+  }
+}
