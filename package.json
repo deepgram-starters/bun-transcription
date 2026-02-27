@@ -12,11 +12,17 @@
     "type": "git",
     "url": "git+https://github.com/deepgram-starters/bun-transcription.git"
   },
-  "keywords": ["speech-to-text", "deepgram", "transcription", "bun", "typescript"],
+  "keywords": [
+    "speech-to-text",
+    "deepgram",
+    "transcription",
+    "bun",
+    "typescript"
+  ],
   "author": "Deepgram DX Team <devrel@deepgram.com>",
   "license": "MIT",
   "dependencies": {
-    "@deepgram/sdk": "4.11.3",
+    "@deepgram/sdk": "5.0.0-beta.4",
     "jsonwebtoken": "9.0.2",
     "@iarna/toml": "2.2.5"
   },

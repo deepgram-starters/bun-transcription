@@ -16,7 +16,7 @@
 // IMPORTS
 // ============================================================================
 
-import { createClient } from "@deepgram/sdk";
+import { DeepgramClient } from "@deepgram/sdk";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import TOML from "@iarna/toml";
@@ -154,7 +154,7 @@ const apiKey = loadApiKey();
 // SETUP - Initialize Deepgram client
 // ============================================================================
 
-const deepgram = createClient(apiKey);
+const deepgram = new DeepgramClient({ apiKey });
 
 // ============================================================================
 // HELPER FUNCTIONS - Modular logic for easier understanding and testing
@@ -216,18 +216,15 @@ async function transcribeAudio(
 ): Promise<unknown> {
   // URL transcription
   if (dgRequest.url) {
-    return await deepgram.listen.prerecorded.transcribeUrl(
-      { url: dgRequest.url },
-      options
-    );
+    return await deepgram.listen.v1.media.transcribeUrl({ url: dgRequest.url, ...options });
   }
 
   // File transcription
   if (dgRequest.buffer) {
-    return await deepgram.listen.prerecorded.transcribeFile(dgRequest.buffer, {
-      ...options,
-      mimetype: dgRequest.mimetype,
-    });
+    return await deepgram.listen.v1.media.transcribeFile(
+      { data: dgRequest.buffer, contentType: dgRequest.mimetype },
+      options
+    );
   }
 
   throw new Error("Invalid transcription request");
@@ -256,19 +253,7 @@ function formatTranscriptionResponse(
   transcriptionResponse: any,
   modelName: string
 ): TranscriptionResponse {
-  // Check for SDK-level errors first
-  if (transcriptionResponse.error) {
-    const error = transcriptionResponse.error;
-    throw new Error(
-      `Deepgram API error: ${error.message || JSON.stringify(error)}`
-    );
-  }
-
-  const transcription = transcriptionResponse.result;
-
-  if (!transcription) {
-    throw new Error("No result returned from Deepgram");
-  }
+  const transcription = transcriptionResponse;
 
   const result = transcription?.results?.channels?.[0]?.alternatives?.[0];
 
