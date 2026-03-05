@@ -22,7 +22,7 @@
   "author": "Deepgram DX Team <devrel@deepgram.com>",
   "license": "MIT",
   "dependencies": {
-    "@deepgram/sdk": "5.0.0-beta.4",
+    "@deepgram/sdk": "5.0.0",
     "jsonwebtoken": "9.0.2",
     "@iarna/toml": "2.2.5"
   },
