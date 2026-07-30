@@ -6,6 +6,7 @@ repository = "https://github.com/deepgram-starters/bun-transcription"
 useCase = "transcription"
 language = "typescript"
 framework = "bun"
+sdk = "@deepgram/sdk"
 tags = ["speech-to-text", "transcription", "prerecorded", "bun", "typescript"]
 
 [check]
