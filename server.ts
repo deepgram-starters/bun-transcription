@@ -16,7 +16,7 @@
 // IMPORTS
 // ============================================================================
 
-import { createClient } from "@deepgram/sdk";
+import { DeepgramClient } from "@deepgram/sdk";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import TOML from "@iarna/toml";
@@ -154,7 +154,26 @@ const apiKey = loadApiKey();
 // SETUP - Initialize Deepgram client
 // ============================================================================
 
-const deepgram = createClient(apiKey);
+// Support DEEPGRAM_BASE_URL (e.g. a staging host) via the SDK `environment`
+// option; falls back to the production endpoint when unset.
+const baseUrl = process.env.DEEPGRAM_BASE_URL;
+const deepgram = new DeepgramClient({
+  apiKey,
+  ...(baseUrl
+    ? {
+        environment: {
+          base: baseUrl
+            .replace(/^wss:\/\//, "https://")
+            .replace(/^ws:\/\//, "http://"),
+          production: baseUrl,
+          agent: baseUrl,
+          agentRest: baseUrl
+            .replace(/^wss:\/\//, "https://")
+            .replace(/^ws:\/\//, "http://"),
+        },
+      }
+    : {}),
+});
 
 // ============================================================================
 // HELPER FUNCTIONS - Modular logic for easier understanding and testing
@@ -214,20 +233,24 @@ async function transcribeAudio(
   dgRequest: TranscriptionRequest,
   options: Record<string, unknown>
 ): Promise<unknown> {
-  // URL transcription
+  // URL transcription. The v5 SDK returns the result directly and throws on
+  // error; wrap it as { result } so formatTranscriptionResponse is unchanged.
   if (dgRequest.url) {
-    return await deepgram.listen.prerecorded.transcribeUrl(
-      { url: dgRequest.url },
-      options
-    );
+    return {
+      result: await deepgram.listen.v1.media.transcribeUrl({
+        url: dgRequest.url,
+        ...options,
+      }),
+    };
   }
 
-  // File transcription
+  // File transcription (mimetype is auto-detected in v5)
   if (dgRequest.buffer) {
-    return await deepgram.listen.prerecorded.transcribeFile(dgRequest.buffer, {
-      ...options,
-      mimetype: dgRequest.mimetype,
-    });
+    return {
+      result: await deepgram.listen.v1.media.transcribeFile(dgRequest.buffer, {
+        ...options,
+      }),
+    };
   }
 
   throw new Error("Invalid transcription request");
